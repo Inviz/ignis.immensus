@@ -518,7 +518,7 @@ export default function Slider() {
     };
   }
 
-  useEffect(() => {
+  const setLayout = () => {
     const slides = Array.from(
       document.querySelectorAll("[slide-index]")
     ) as HTMLElement[];
@@ -594,7 +594,10 @@ export default function Slider() {
         slide.style.zIndex = "3";
       }
     }
-  }, [activeIndex]);
+  };
+  useEffect(setLayout, [activeIndex, width, height]);
+
+  const lastClick = useRef(new Date());
 
   return (
     <div
@@ -623,7 +626,12 @@ export default function Slider() {
             }}
           >
             <div
-              onClick={(e) => setActiveIndex(index)}
+              onClick={(e) => {
+                if (Number(new Date()) - Number(lastClick.current) > 2000) {
+                  lastClick.current = new Date();
+                  setActiveIndex(index);
+                }
+              }}
               style={{
                 background: `url("${image}")`,
                 position: "absolute",
