@@ -12,11 +12,64 @@ type Position = {
   titleAngle: number;
 };
 type Item = {
-  title: string;
   image: string;
+  title: string;
+  rect: Rect;
+  focus: Rect;
+  focusLarge?: Rect;
   className: string;
+  position?: Position;
 };
-import { useTransition, animated, config } from "@react-spring/web";
+
+type Rect = { left: number; top: number; width: number; height: number };
+
+function computeZoom(
+  imageSize: Rect,
+  imageSection: Rect,
+  containerSize: Rect,
+  focusArea: Rect = containerSize
+) {
+  // Step 1: Size the image so that it makes image section to cover the focus area
+  // Step 1: Size the image so that it makes image section to cover the focus area
+  const scale = Math.max(
+    focusArea.width / imageSection.width,
+    focusArea.height / imageSection.height
+  );
+
+  const backgroundSize = {
+    width: ((imageSize.width * scale) / containerSize.width) * 100,
+    height: ((imageSize.height * scale) / containerSize.height) * 100,
+  };
+
+  console.log([
+    imageSize.height,
+    scale,
+    imageSize.height * scale,
+    containerSize.height,
+  ]);
+
+  // Step 2: Position the image so that the selected section is at the top left of the focus area
+  const backgroundPosition = {
+    x:
+      ((imageSection.left * scale - focusArea.left) /
+        (imageSize.width * scale - containerSize.width)) *
+      100,
+    y:
+      ((imageSection.top * scale - focusArea.top) /
+        (imageSize.height * scale - containerSize.height)) *
+      100,
+  };
+
+  console.log(backgroundPosition);
+  // Step 3: Respect the ratio of the image and avoid stretching it when computing background size
+  return {
+    backgroundSize: `${backgroundSize.width}% ${backgroundSize.height}%`,
+    backgroundPosition: `${
+      isFinite(backgroundPosition.x) ? backgroundPosition.x : 0
+    }% ${isFinite(backgroundPosition.y) ? backgroundPosition.y : 0}%`,
+  };
+}
+
 // @ts-ignore
 import { interpolate } from "flubber";
 const logo = (
@@ -313,6 +366,34 @@ const title = (
     </defs>
   </svg>
 );
+function computeTransitionDuration(
+  startZoomLevel: number,
+  endZoomLevel: number,
+  startFocalPoint: Rect,
+  endFocalPoint: Rect,
+  maxDuration: number
+) {
+  // Compute the change in zoom level and the change in focal point
+  const deltaZoom = Math.abs(endZoomLevel - startZoomLevel);
+  const deltaX = Math.abs(endFocalPoint.left - startFocalPoint.left);
+  const deltaY = Math.abs(endFocalPoint.top - startFocalPoint.top);
+
+  // Compute the absolute distance of the change in the focal point
+  const focalPointDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+  // Assume that the scrolling speed should be proportional to the zoom level
+  // Therefore, the total scroll distance should be multiplied by the average zoom level during the transition
+  const averageZoomLevel = (startZoomLevel + endZoomLevel) / 2;
+  const zoomAdjustedScrollDistance = focalPointDistance * averageZoomLevel;
+
+  // The total "distance" of the transition is the sum of the change in zoom and the zoom-adjusted change in focal point
+  const totalDistance = deltaZoom + zoomAdjustedScrollDistance;
+
+  // The duration should be proportional to the total distance, up to a maximum duration
+  const duration = Math.min(totalDistance * maxDuration, maxDuration);
+
+  return duration;
+}
 
 function drawOctagon(x: number, y: number, radius: number, vertex = 2) {
   const octagonPoints = [];
@@ -340,6 +421,7 @@ export default function Slider() {
     height: typeof window == "undefined" ? 600 : window.innerHeight,
   });
   const [{ width, height }, setSize] = useState(getSize);
+  const rect = { top: 0, left: 0, width, height };
   useEffect(() => {
     setSize(getSize);
     window.addEventListener("resize", () => {
@@ -443,11 +525,17 @@ export default function Slider() {
     angle: 0,
   } as Position;
 
-  const centerPosition = {
-    left: width / 2,
-    top: height / 2,
-    angle: 0,
-  } as Position;
+  const centerPosition = isMobile
+    ? {
+        left: width / 2,
+        top: 0 + tileRadius + height / 4,
+        angle: 0,
+      }
+    : ({
+        left: width / 4,
+        top: height / 2,
+        angle: 0,
+      } as Position);
   centerPosition.path = getPositionPath(centerPosition, 1.5);
   centerPosition.expandedPath = interpolate(centerPosition.path, fullscreen, {
     maxSegmentLength: 5,
@@ -457,30 +545,43 @@ export default function Slider() {
   const items: Item[] = useMemo(
     () => [
       {
-        image:
-          "https://images.pexels.com/photos/1187079/pexels-photo-1187079.jpeg?cs=srgb&dl=pexels-artem-saranin-1187079.jpg&fm=jpg",
+        image: "/frame.jpg",
+
+        rect: { left: 0, top: 0, width: 4000, height: 6000 },
+        focus: { left: 1000, top: 1000, width: 1000, height: 1000 },
         title: "Welcome",
         className: "about",
       },
       {
-        image: "https://www.pexels.com/photo/326055/download/",
+        image: "/candle.jpg",
+        rect: { left: 0, top: 0, width: 4000, height: 2000 },
+        focus: { left: 1105, top: 239, width: 1229, height: 1229 },
+        focusLarge: { left: 1389, top: 450, width: 700, height: 700 },
         title: "Candles",
         className: "candles",
       },
       {
-        image:
-          "https://img.freepik.com/free-photo/beautiful-view-greenery-bridge-forest-perfect-background_181624-17827.jpg?w=2000",
-        title: "Accessories",
-        className: "accessories",
-      },
-      {
-        image: "https://wallpaperaccess.com/full/1244145.jpg",
+        image: "/fragrances.jpg",
+        rect: { left: 0, top: 0, width: 2600, height: 1500 },
+        focus: { left: 756, top: 289, width: 857, height: 857 },
+        focusLarge: { left: 756, top: 447, width: 467, height: 467 },
         title: "Fragrances",
         className: "fragrances",
       },
       {
-        image: "https://wallpaperaccess.com/full/143763.jpg",
-        title: "About",
+        image: "/accessories.jpg",
+        rect: { left: 0, top: 0, width: 2560, height: 1707 },
+        focus: { left: 260, top: 150, width: 1000, height: 1000 },
+        focusLarge: { left: 333, top: 447, width: 580, height: 580 },
+        title: "Accessories",
+        className: "accessories",
+      },
+      {
+        image: "/delivery.jpg",
+        rect: { left: 0, top: 0, width: 2600, height: 2600 },
+        focus: { left: 333, top: 700, width: 1600, height: 1600 },
+        focusLarge: { left: 585, top: 903, width: 700, height: 700 },
+        title: "Delivery",
         className: "about",
       },
     ],
@@ -498,7 +599,6 @@ export default function Slider() {
       .filter((i) => i != lastActiveItem)
       .concat(lastActiveItem));
   }, [activeIndex]);
-  console.log(orderedItems);
   lastIndex.current = activeIndex;
   const fullscreenExpanded = useMemo(
     () =>
@@ -508,16 +608,16 @@ export default function Slider() {
     []
   );
 
-  function getPositionFrame(position: Position | null) {
+  function getPositionFrame(position: Position | undefined) {
     if (!position) {
       return {
-        backgroundSize: "cover",
+        //backgroundSize: "cover",
         clipPath: fullscreenExpanded,
         titleTransform: "translate(50px, 50px)",
       };
     }
     return {
-      backgroundSize: "cover",
+      // backgroundSize: "cover",
       clipPath: position.expandedPath,
       titleTransform: `
       translate(${position.left}px, ${position.top}px)
@@ -551,7 +651,7 @@ export default function Slider() {
       () => {
         mid.forEach((fn) => fn());
       },
-      isLoaded ? 700 : 0
+      isLoaded ? 900 : 0
     );
     setTimeout(
       () => {
@@ -565,9 +665,11 @@ export default function Slider() {
       const item = items[index];
       const { image, title } = item;
       const positionIndex = activeIndex == index ? null : used++;
-      const position = positionIndex == null ? null : positions[positionIndex];
+      const position =
+        positionIndex == null ? undefined : positions[positionIndex];
+      item.position = position;
       const frame = getPositionFrame(position);
-      const { clipPath, titleTransform, backgroundSize } = frame;
+      const { clipPath, titleTransform } = frame;
       const imageElement = slide.firstElementChild as HTMLElement;
       const titleElement = slide.lastElementChild as HTMLElement;
       if (slide == lastSlide) {
@@ -578,6 +680,15 @@ export default function Slider() {
           titleElement.style.transition = "";
           titleElement.style.transform = titleTransform;
           imageElement.style.clipPath = `path("${clipPath}")`;
+          Object.assign(
+            imageElement.style,
+            computeZoom(item.rect, item.focus, rect, {
+              left: position.left - tileRadius,
+              top: position.top - tileRadius,
+              width: tileRadius * 2,
+              height: tileRadius * 2,
+            })
+          );
           lastSlide.style.transition = "";
           lastSlide.style.opacity = "0";
           const x = width / 2 - logoPosition.left;
@@ -595,19 +706,26 @@ export default function Slider() {
           });
         });
       } else if (slide == activeSlide) {
-        imageElement.style.backgroundSize = "cover";
         imageElement.style.clipPath = `path("${centerPosition.expandedPath}")`;
-        imageElement.style.transition =
-          "background-size 1s, clip-path .5s, z-index .001s .1s";
+        imageElement.style.transition = "clip-path .3s";
         titleElement.style.transition = "transform .4s ease-out";
-        titleElement.style.transform = `translate(-50%, -50%) translate(${
-          width / 2
-        }px, ${height / 2 - tileRadius / 4}px)`;
+        titleElement.style.transform = `translate(-50%, -150%) translate(${
+          centerPosition.left
+        }px, ${centerPosition.top - tileRadius}px)`;
+
+        Object.assign(
+          imageElement.style,
+          computeZoom(item.rect, item.focusLarge || item.focus, rect, {
+            left: centerPosition.left - width / 6,
+            top: centerPosition.top - width / 6,
+            width: width / 3,
+            height: height / 3,
+          })
+        );
         mid.push(() => {
-          imageElement.style.backgroundSize = "cover";
           imageElement.style.clipPath = `path("${clipPath}")`;
           imageElement.style.transition =
-            "background-size 1s, clip-path .8s, z-index .001s .1s";
+            "background-size 1.5s, clip-path .8s, background-position 1.4s";
           titleElement.style.transform = titleTransform;
           titleElement.style.transition = "transform .8s ease-out";
           slide.style.zIndex = "2";
@@ -620,13 +738,21 @@ export default function Slider() {
         });
       } else {
         end.push(() => {
-          imageElement.style.backgroundSize = "cover";
           imageElement.style.clipPath = `path("${clipPath}")`;
           imageElement.style.transition =
-            "background-size 1s, clip-path .8s, z-index .001s .1s";
+            "clip-path .8s,background-size .8s, background-position .8s";
           titleElement.style.transform = titleTransform;
           titleElement.style.transition = "transform .9s";
           slide.style.zIndex = "3";
+          Object.assign(
+            imageElement.style,
+            computeZoom(item.rect, item.focus, rect, {
+              left: position!.left - tileRadius,
+              top: position!.top - tileRadius,
+              width: tileRadius * 2,
+              height: tileRadius * 2,
+            })
+          );
         });
       }
     }
@@ -681,7 +807,7 @@ export default function Slider() {
                 }
               }}
               style={{
-                background: `url("${image}")`,
+                backgroundImage: `url("${image}")`,
                 position: "absolute",
                 top: 0,
                 left: 0,
@@ -690,6 +816,7 @@ export default function Slider() {
                 width: "100%",
                 height: "100%",
                 pointerEvents: "all",
+                backgroundRepeat: "no-repeat",
               }}
             ></div>
             <h2
@@ -698,6 +825,8 @@ export default function Slider() {
                 fontFamily: "Marcellus SC",
                 position: "absolute",
                 color: "rgba(255,255,255,0.85)",
+                background: "rgba(0,0,0,0.5)",
+                padding: "0 20px",
                 fontSize: tileRadius / 2,
               }}
             >
