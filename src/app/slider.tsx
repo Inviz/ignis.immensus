@@ -685,6 +685,7 @@ export default function Slider() {
       <div
         style={{
           zIndex: 5,
+          transform: "translateY(.1px)",
           position: "absolute",
           left: centerX - tileRadius,
           top: centerY - tileRadius,
