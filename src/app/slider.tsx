@@ -632,9 +632,6 @@ export default function Slider() {
     }
   };
   useEffect(setLayout, [activeIndex, width, height]);
-  setTimeout(() => {
-    setLoaded(true);
-  }, 1000);
 
   const lastClick = useRef(new Date(Number(new Date()) - 2000));
 
@@ -679,6 +676,7 @@ export default function Slider() {
               onClick={(e) => {
                 if (Number(new Date()) - Number(lastClick.current) > 2000) {
                   lastClick.current = new Date();
+                  setLoaded(true);
                   setActiveIndex(index);
                 }
               }}
