@@ -526,11 +526,11 @@ export default function Slider() {
   } as Position;
 
   const centerPosition = isMobile
-    ? {
+    ? ({
         left: width / 2,
         top: 0 + tileRadius + height / 4,
         angle: 0,
-      }
+      } as Position)
     : ({
         left: width / 4,
         top: height / 2,
