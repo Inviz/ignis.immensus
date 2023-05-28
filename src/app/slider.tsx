@@ -367,7 +367,8 @@ export default function Slider() {
     tileRadius * Math.sin(((2 * Math.PI) / 8) * 3);
   const shiftDiagonally = (85.3 / 50) * tileRadius;
 
-  const centerX = width - tileRadius;
+  const isMobile = width < 600;
+  const centerX = isMobile ? width / 2 : width - tileRadius;
   const centerY = height - tileRadius * 1.6;
 
   const getPositionPath = (position: Position, scale = 1) => {
@@ -384,12 +385,13 @@ export default function Slider() {
   const positions: Position[] = useMemo(
     () =>
       [
-        {
-          left: centerX - shiftDiagonally,
-          top: centerY + shiftDiagonally - tileRadius,
-          angle: -45,
-          titleAngle: -22.5,
-        } as Position,
+        !isMobile &&
+          ({
+            left: centerX - shiftDiagonally,
+            top: centerY + shiftDiagonally - tileRadius,
+            angle: -45,
+            titleAngle: -22.5,
+          } as Position),
         {
           left: centerX - shiftDiagonally,
           top: centerY + tileRadius - shiftDiagonally,
@@ -408,7 +410,15 @@ export default function Slider() {
           angle: 90,
           titleAngle: -22.5 - 90,
         } as Position,
+        isMobile &&
+          ({
+            left: centerX + shiftDiagonally,
+            top: centerY + tileRadius - shiftDiagonally,
+            angle: 135,
+            titleAngle: -22.5 - 90,
+          } as Position),
       ]
+        .filter(Boolean)
         .map((position) => {
           const path = getPositionPath(position);
           return {
