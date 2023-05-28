@@ -657,7 +657,7 @@ export default function Slider() {
       () => {
         end.forEach((fn) => fn());
       },
-      isLoaded ? 1300 : 0
+      isLoaded ? 1700 : 0
     );
 
     for (const slide of slides) {
@@ -675,6 +675,10 @@ export default function Slider() {
       if (slide == lastSlide) {
         if (!position) continue;
         slide.style.zIndex = "1";
+        titleElement.style.transition = "opacity .3s";
+        requestAnimationFrame(() => {
+          titleElement.style.opacity = "0";
+        });
         end.push(() => {
           imageElement.style.transition = "";
           titleElement.style.transition = "";
@@ -697,12 +701,13 @@ export default function Slider() {
           lastSlide.style.zIndex = "3";
           requestAnimationFrame(() => {
             lastSlide.style.opacity = "1";
+            titleElement.style.opacity = "1";
             imageElement.style.transition = "clip-path .3s";
             imageElement.style.clipPath = `path("${clipPath}")`;
             lastSlide.style.transition =
               "transform 0.9s cubic-bezier(.02, .99, .69, 1), opacity 0.6s .2s ease-out";
             lastSlide.style.transform = `translate(${-x}px, ${-y}px) rotate(0) translate(${x}px, ${y}px) `;
-            titleElement.style.transition = "transform .9s";
+            titleElement.style.transition = "opacity 0.9s transform .9s";
           });
         });
       } else if (slide == activeSlide) {
