@@ -385,13 +385,14 @@ export default function Slider() {
   const positions: Position[] = useMemo(
     () =>
       [
-        !isMobile &&
+        (!isMobile &&
           ({
             left: centerX - shiftDiagonally,
             top: centerY + shiftDiagonally - tileRadius,
             angle: -45,
             titleAngle: -22.5,
-          } as Position),
+          } as Position)) ||
+          undefined,
         {
           left: centerX - shiftDiagonally,
           top: centerY + tileRadius - shiftDiagonally,
@@ -410,16 +411,17 @@ export default function Slider() {
           angle: 90,
           titleAngle: -22.5 - 90,
         } as Position,
-        isMobile &&
+        (isMobile &&
           ({
             left: centerX + shiftDiagonally,
             top: centerY + tileRadius - shiftDiagonally,
             angle: 135,
             titleAngle: -22.5 - 90,
-          } as Position),
+          } as Position)) ||
+          undefined,
       ]
-        .filter(Boolean)
-        .map((position) => {
+        .flatMap((position) => {
+          if (position == null) return [];
           const path = getPositionPath(position);
           return {
             ...position,
