@@ -445,7 +445,7 @@ export default function Slider() {
         translate: [-1, -1],
       })
       .toString() +
-    ` M-${tileRadius},-${tileRadius} M${tileRadius},${tileRadius}`;
+    ` M-${tileRadius},-${tileRadius} M${tileRadius},${tileRadius} Z`;
 
   const shiftAligned =
     tileRadius * Math.sin(((2 * Math.PI) / 8) * 2) -
@@ -493,7 +493,7 @@ export default function Slider() {
           left: centerX + shiftDiagonally - tileRadius,
           top: centerY - shiftDiagonally,
           angle: 90,
-          titleAngle: -22.5 - 90,
+          titleAngle: -22.5 - (isMobile ? 45 : 90),
         } as Position,
         (isMobile &&
           ({
@@ -549,40 +549,40 @@ export default function Slider() {
 
         rect: { left: 0, top: 0, width: 4000, height: 6000 },
         focus: { left: 1000, top: 1000, width: 1000, height: 1000 },
-        title: "Welcome",
+        title: "Us",
         className: "about",
-      },
-      {
-        image: "/candle.jpg",
-        rect: { left: 0, top: 0, width: 4000, height: 2000 },
-        focus: { left: 1105, top: 239, width: 1229, height: 1229 },
-        focusLarge: { left: 1389, top: 450, width: 700, height: 700 },
-        title: "Candles",
-        className: "candles",
       },
       {
         image: "/fragrances.jpg",
         rect: { left: 0, top: 0, width: 2600, height: 1500 },
         focus: { left: 756, top: 289, width: 857, height: 857 },
         focusLarge: { left: 756, top: 447, width: 467, height: 467 },
-        title: "Fragrances",
+        title: "Oils",
         className: "fragrances",
-      },
-      {
-        image: "/accessories.jpg",
-        rect: { left: 0, top: 0, width: 2560, height: 1707 },
-        focus: { left: 260, top: 150, width: 1000, height: 1000 },
-        focusLarge: { left: 333, top: 447, width: 580, height: 580 },
-        title: "Accessories",
-        className: "accessories",
       },
       {
         image: "/delivery.jpg",
         rect: { left: 0, top: 0, width: 2600, height: 2600 },
         focus: { left: 333, top: 700, width: 1600, height: 1600 },
         focusLarge: { left: 585, top: 903, width: 700, height: 700 },
-        title: "Delivery",
+        title: "Refill",
         className: "about",
+      },
+      {
+        image: "/accessories.jpg",
+        rect: { left: 0, top: 0, width: 2560, height: 1707 },
+        focus: { left: 260, top: 150, width: 1000, height: 1000 },
+        focusLarge: { left: 333, top: 447, width: 580, height: 580 },
+        title: "Tools",
+        className: "accessories",
+      },
+      {
+        image: "/candle.jpg",
+        rect: { left: 0, top: 0, width: 4000, height: 2000 },
+        focus: { left: 1205, top: 0, width: 1000, height: 1000 },
+        focusLarge: { left: 1389, top: 450, width: 700, height: 700 },
+        title: "Jars",
+        className: "candles",
       },
     ],
     []
@@ -624,11 +624,15 @@ export default function Slider() {
       translate(-50%, -50%)
       rotateZ(${position.angle + position.titleAngle}deg)
       translate(50%, 50%)
-      translate(${-tileRadius / 3}px, ${-tileRadius * 1.15}px)
+      translate(${
+        -tileRadius / 3 +
+        (position.titleAngle == -22.5 - 90 ? tileRadius * 0.1 : 0)
+      }px, ${-tileRadius * 1.4}px)
       translate(0%, 50%)
       translate(-50%, -50%)
-      scale(${isMobile ? "30%" : "25%"})
+      scale(${isMobile ? "100%" : "100%"})
       translate(50%, 50%)
+      translate(-${tileRadius * 0.15}px, 0)
       `,
     };
   }
@@ -701,6 +705,7 @@ export default function Slider() {
           lastSlide.style.zIndex = "3";
           requestAnimationFrame(() => {
             lastSlide.style.opacity = "1";
+            slide.classList.add("slide-inactive");
             titleElement.style.opacity = "1";
             imageElement.style.transition = "clip-path .3s";
             imageElement.style.clipPath = `path("${clipPath}")`;
@@ -712,7 +717,7 @@ export default function Slider() {
         });
       } else if (slide == activeSlide) {
         imageElement.style.clipPath = `path("${centerPosition.expandedPath}")`;
-        imageElement.style.transition = "clip-path .3s";
+        imageElement.style.transition = "clip-path .3s, filter 3s -.8s";
         titleElement.style.transition = "transform .4s ease-out";
         titleElement.style.transform = `translate(-50%, -150%) translate(${
           centerPosition.left
@@ -727,6 +732,7 @@ export default function Slider() {
             height: height / 3,
           })
         );
+        slide.classList.remove("slide-inactive");
         mid.push(() => {
           imageElement.style.clipPath = `path("${clipPath}")`;
           imageElement.style.transition =
@@ -743,6 +749,7 @@ export default function Slider() {
         });
       } else {
         end.push(() => {
+          slide.classList.add("slide-inactive");
           imageElement.style.clipPath = `path("${clipPath}")`;
           imageElement.style.transition =
             "clip-path .8s,background-size .8s, background-position .8s";
@@ -751,6 +758,15 @@ export default function Slider() {
           slide.style.zIndex = "3";
           Object.assign(
             imageElement.style,
+            computeZoom(item.rect, item.focus, rect, {
+              left: position!.left - tileRadius,
+              top: position!.top - tileRadius,
+              width: tileRadius * 2,
+              height: tileRadius * 2,
+            })
+          );
+          Object.assign(
+            titleElement.style,
             computeZoom(item.rect, item.focus, rect, {
               left: position!.left - tileRadius,
               top: position!.top - tileRadius,
@@ -801,7 +817,9 @@ export default function Slider() {
               height: "100%",
               width: "100%",
               pointerEvents: "none",
+              backgroundRepeat: "no-repeat",
             }}
+            className="slide "
           >
             <div
               onClick={(e) => {
@@ -812,7 +830,9 @@ export default function Slider() {
                 }
               }}
               style={{
-                backgroundImage: `url("${image}")`,
+                /*@ts-ignore */
+                "--img": `url("${image}")`,
+                backgroundImage: '`url("${image}")`',
                 position: "absolute",
                 top: 0,
                 left: 0,
@@ -821,18 +841,13 @@ export default function Slider() {
                 width: "100%",
                 height: "100%",
                 pointerEvents: "all",
-                backgroundRepeat: "no-repeat",
               }}
             ></div>
             <h2
               style={{
-                outline: "1px solid transparent",
-                fontFamily: "Marcellus SC",
-                position: "absolute",
-                color: "rgba(255,255,255,0.85)",
-                background: "rgba(0,0,0,0.5)",
-                padding: "0 20px",
                 fontSize: tileRadius / 2,
+                width: tileRadius + "px",
+                textAlign: "center",
               }}
             >
               {title.toLowerCase()}
@@ -841,6 +856,12 @@ export default function Slider() {
         );
       })}
 
+      <div
+        className="backdrop"
+        style={{
+          background: `radial-gradient(40.00% 40.00% at ${centerX}px ${centerY}px,rgba(0, 0, 0, 0.85) 0%,  rgba(0, 0, 0, 0.7) 32.06%, rgba(74, 52, 52, 0) 100%)`,
+        }}
+      ></div>
       <div
         style={{
           zIndex: 5,
@@ -874,14 +895,25 @@ export default function Slider() {
             </linearGradient>
           </defs>
           <path
-            d={octagon}
+            d={getPositionPath(
+              {
+                left: 0,
+                top: 0,
+                path: octagon,
+                angle: 0,
+                titleAngle: 0,
+              },
+              1.023
+            )}
             fill={`url("#orange")`}
             transform={`translate(${tileRadius},${tileRadius})`}
           />
         </svg>
         <div
           id="logo"
-          style={{ transform: `rotateZ(${logoRotation.current}deg)` }}
+          style={{
+            transform: `rotateZ(${logoRotation.current}deg)`,
+          }}
         >
           {logo}
         </div>

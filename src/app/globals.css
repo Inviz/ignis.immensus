@@ -100,3 +100,29 @@ a {
     color-scheme: dark;
   }
 }
+.slide h2{
+  font-family: 'Saira Extra Condensed';
+  text-transform: uppercase;
+  color: #fff;
+  -webkit-text-stroke: 1px rgba(0,0,0,0.5);
+  text-shadow: 0 0 3px rgba(0,0,0,0.5);
+ /* backdrop-filter: blur(2px);*/
+  
+}
+.slide-inactive > div {
+/*	filter: brightness(2) invert(1) grayscale(1);*/
+/*	background-blend-mode: difference, screen;*/
+}
+.slide > div{
+	--img: url(https://garden.bradwoods.io/images/waves.webp);
+	background-image: var(--img), var(--img), var(--img) !important;
+}
+
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+}

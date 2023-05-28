@@ -20,7 +20,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="white" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap&family=PT+Sans+Narrow&family=Saira+Extra+Condensed:wght@600"
           rel="stylesheet"
         ></link>
       </head>
