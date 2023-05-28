@@ -634,7 +634,7 @@ export default function Slider() {
   useEffect(setLayout, [activeIndex, width, height]);
   setTimeout(() => {
     setLoaded(true);
-  }, 100);
+  }, 1000);
 
   const lastClick = useRef(new Date(Number(new Date()) - 2000));
 
