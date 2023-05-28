@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-spring/web": "^9.7.2",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
+    "flubber": "^0.4.2",
     "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "svg-path-commander": "^2.0.5",
+    "svg-round-corners": "^0.4.1",
     "typescript": "5.0.4"
   }
 }
