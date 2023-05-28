@@ -545,6 +545,21 @@ export default function Slider() {
     ) as HTMLElement;
 
     var used = 0;
+    var mid: (() => void)[] = [];
+    var end: (() => void)[] = [];
+    setTimeout(
+      () => {
+        mid.forEach((fn) => fn());
+      },
+      isLoaded ? 700 : 0
+    );
+    setTimeout(
+      () => {
+        end.forEach((fn) => fn());
+      },
+      isLoaded ? 1300 : 0
+    );
+
     for (const slide of slides) {
       const index = parseInt(slide.getAttribute("slide-index") as string);
       const item = items[index];
@@ -558,7 +573,7 @@ export default function Slider() {
       if (slide == lastSlide) {
         if (!position) continue;
         slide.style.zIndex = "1";
-        setTimeout(() => {
+        end.push(() => {
           imageElement.style.transition = "";
           titleElement.style.transition = "";
           titleElement.style.transform = titleTransform;
@@ -578,19 +593,17 @@ export default function Slider() {
             lastSlide.style.transform = `translate(${-x}px, ${-y}px) rotate(0) translate(${x}px, ${y}px) `;
             titleElement.style.transition = "transform .9s";
           });
-        }, 1300);
+        });
       } else if (slide == activeSlide) {
-        setTimeout(() => {
-          imageElement.style.backgroundSize = "cover";
-          imageElement.style.clipPath = `path("${centerPosition.expandedPath}")`;
-          imageElement.style.transition =
-            "background-size 1s, clip-path .5s, z-index .001s .1s";
-          titleElement.style.transition = "transform .4s ease-out";
-          titleElement.style.transform = `translate(-50%, -50%) translate(${
-            width / 2
-          }px, ${height / 2 - tileRadius / 4}px)`;
-        }, 0);
-        setTimeout(() => {
+        imageElement.style.backgroundSize = "cover";
+        imageElement.style.clipPath = `path("${centerPosition.expandedPath}")`;
+        imageElement.style.transition =
+          "background-size 1s, clip-path .5s, z-index .001s .1s";
+        titleElement.style.transition = "transform .4s ease-out";
+        titleElement.style.transform = `translate(-50%, -50%) translate(${
+          width / 2
+        }px, ${height / 2 - tileRadius / 4}px)`;
+        mid.push(() => {
           imageElement.style.backgroundSize = "cover";
           imageElement.style.clipPath = `path("${clipPath}")`;
           imageElement.style.transition =
@@ -598,15 +611,15 @@ export default function Slider() {
           titleElement.style.transform = titleTransform;
           titleElement.style.transition = "transform .8s ease-out";
           slide.style.zIndex = "2";
-        }, 700);
-        setTimeout(() => {
+        });
+        end.push(() => {
           logoRotation.current += 45;
           const logo = document.querySelector("#logo") as HTMLElement;
           logo.style.transition = "0.8s transform";
           logo.style.transform = `rotateZ(${logoRotation.current}deg)`;
-        }, 1300);
+        });
       } else {
-        setTimeout(() => {
+        end.push(() => {
           imageElement.style.backgroundSize = "cover";
           imageElement.style.clipPath = `path("${clipPath}")`;
           imageElement.style.transition =
@@ -614,16 +627,20 @@ export default function Slider() {
           titleElement.style.transform = titleTransform;
           titleElement.style.transition = "transform .9s";
           slide.style.zIndex = "3";
-        }, 1300);
+        });
       }
     }
   };
   useEffect(setLayout, [activeIndex, width, height]);
+  setTimeout(() => {
+    setLoaded(true);
+  }, 100);
 
-  const lastClick = useRef(new Date());
+  const lastClick = useRef(new Date(Number(new Date()) - 2000));
 
   return (
     <div
+      id="slider"
       style={{
         height: "100%",
         width: "100%",
@@ -632,6 +649,16 @@ export default function Slider() {
         position: "absolute",
       }}
     >
+      {!isLoaded && (
+        <style>
+          $
+          {`
+        #slider * {
+          transition: none !important
+        }
+        `}
+        </style>
+      )}
       {orderedItems.map((item) => {
         const index = items.indexOf(item);
         const { image, title } = item;
