@@ -438,6 +438,7 @@ export default function Slider() {
   centerPosition.expandedPath = interpolate(centerPosition.path, fullscreen, {
     maxSegmentLength: 5,
   })(0.001).toString();
+  const logoRotation = useRef(0);
 
   const items: Item[] = useMemo(
     () => [
@@ -584,14 +585,22 @@ export default function Slider() {
           titleElement.style.transition = "transform .8s ease-out";
           slide.style.zIndex = "2";
         }, 700);
+        setTimeout(() => {
+          logoRotation.current += 45;
+          const logo = document.querySelector("#logo") as HTMLElement;
+          logo.style.transition = "0.8s transform";
+          logo.style.transform = `rotateZ(${logoRotation.current}deg)`;
+        }, 1300);
       } else {
-        imageElement.style.backgroundSize = "cover";
-        imageElement.style.clipPath = `path("${clipPath}")`;
-        imageElement.style.transition =
-          "background-size 1s, clip-path 1s, z-index .001s .1s";
-        titleElement.style.transform = titleTransform;
-        titleElement.style.transition = "transform .9s";
-        slide.style.zIndex = "3";
+        setTimeout(() => {
+          imageElement.style.backgroundSize = "cover";
+          imageElement.style.clipPath = `path("${clipPath}")`;
+          imageElement.style.transition =
+            "background-size 1s, clip-path .8s, z-index .001s .1s";
+          titleElement.style.transform = titleTransform;
+          titleElement.style.transition = "transform .9s";
+          slide.style.zIndex = "3";
+        }, 1300);
       }
     }
   };
@@ -696,7 +705,12 @@ export default function Slider() {
             transform={`translate(${tileRadius},${tileRadius})`}
           />
         </svg>
-        {logo}
+        <div
+          id="logo"
+          style={{ transform: `rotateZ(${logoRotation.current}deg)` }}
+        >
+          {logo}
+        </div>
         {title}
       </div>
     </div>
