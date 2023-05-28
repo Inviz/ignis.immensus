@@ -333,6 +333,8 @@ function drawOctagon(x: number, y: number, radius: number, vertex = 2) {
   return path;
 }
 export default function Slider() {
+  const [isLoaded, setLoaded] = useState(false);
+
   const getSize = () => ({
     width: typeof window == "undefined" ? 1000 : window.innerWidth,
     height: typeof window == "undefined" ? 600 : window.innerHeight,
@@ -347,7 +349,8 @@ export default function Slider() {
 
   const fullscreen = `M0,0 L${width},0 L${width},${height} L0,${height} L0,0`;
 
-  const tileRadius = Math.min(width, height) / 3.5 / 2;
+  const isMobile = width < 600;
+  const tileRadius = Math.min(width, height) / (isMobile ? 2.75 : 3.5) / 2;
   const stroke = tileRadius / 20;
   const octagonRaw = roundCorners(
     drawOctagon(1, 1, tileRadius - stroke),
@@ -367,7 +370,6 @@ export default function Slider() {
     tileRadius * Math.sin(((2 * Math.PI) / 8) * 3);
   const shiftDiagonally = (85.3 / 50) * tileRadius;
 
-  const isMobile = width < 600;
   const centerX = isMobile ? width / 2 : width - tileRadius;
   const centerY = height - tileRadius * 1.6;
 
@@ -525,7 +527,7 @@ export default function Slider() {
       translate(${-tileRadius / 3}px, ${-tileRadius * 1.15}px)
       translate(0%, 50%)
       translate(-50%, -50%)
-      scale(25%)
+      scale(${isMobile ? "30%" : "25%"})
       translate(50%, 50%)
       `,
     };
