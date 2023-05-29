@@ -451,8 +451,8 @@ export default function Slider() {
     tileRadius * Math.sin(((2 * Math.PI) / 8) * 3);
   const shiftDiagonally = (85.3 / 50) * tileRadius;
 
-  const centerX = isMobile ? width / 2 : width - tileRadius;
-  const centerY = height - tileRadius * 1.6;
+  const focusX = isMobile ? width / 2 : width - tileRadius * 1.7;
+  const focusY = height - tileRadius * 1.6;
 
   const getPositionPath = (position: Position, scale = 1) => {
     return new SVGPathCommander(octagon)
@@ -470,34 +470,34 @@ export default function Slider() {
       [
         (!isMobile &&
           ({
-            left: centerX - shiftDiagonally,
-            top: centerY + shiftDiagonally - tileRadius,
+            left: focusX - shiftDiagonally,
+            top: focusY + shiftDiagonally - tileRadius,
             angle: -45,
             titleAngle: -22.5 + 45,
           } as Position)) ||
           undefined,
         {
-          left: centerX - shiftDiagonally,
-          top: centerY + tileRadius - shiftDiagonally,
+          left: focusX - shiftDiagonally,
+          top: focusY + tileRadius - shiftDiagonally,
           angle: 0,
           titleAngle: -22.5,
         } as Position,
         {
-          left: centerX - shiftDiagonally + tileRadius,
-          top: centerY - shiftDiagonally,
+          left: focusX - shiftDiagonally + tileRadius,
+          top: focusY - shiftDiagonally,
           angle: 45,
           titleAngle: -22.5 - 45,
         } as Position,
         {
-          left: centerX + shiftDiagonally - tileRadius,
-          top: centerY - shiftDiagonally,
+          left: focusX + shiftDiagonally - tileRadius,
+          top: focusY - shiftDiagonally,
           angle: 90,
           titleAngle: -22.5 - (isMobile ? 45 : 90),
         } as Position,
         (isMobile &&
           ({
-            left: centerX + shiftDiagonally,
-            top: centerY + tileRadius - shiftDiagonally,
+            left: focusX + shiftDiagonally,
+            top: focusY + tileRadius - shiftDiagonally,
             angle: 135,
             titleAngle: -22.5 - 90,
           } as Position)) ||
@@ -519,8 +519,8 @@ export default function Slider() {
   );
 
   const logoPosition = {
-    left: centerX,
-    top: centerY,
+    left: focusX,
+    top: focusY,
     angle: 0,
   } as Position;
 
@@ -575,11 +575,43 @@ export default function Slider() {
         title: "Refill",
         className: "about",
       },
+      //{
+      //  image: "/candle2.jpg",
+      //  rect: { left: 0, top: 0, width: 2500, height: 1865 },
+      //  focus: { left: 350, top: 770, width: 600, height: 600 },
+      //  focusLarge: { left: 0, top: 470, width: 1000, height: 1000 },
+      //  title: "Jars",
+      //  className: "candles",
+      //},
+      //{
+      //  image: "/candle3.jpg",
+      //  rect: { left: 0, top: 0, width: 2500, height: 1865 },
+      //  focus: { left: 350, top: 770, width: 600, height: 600 },
+      //  focusLarge: { left: 400, top: 670, width: 800, height: 800 },
+      //  title: "Jars",
+      //  className: "candles",
+      //},
+      /*{
+        image: "/candle4.front.png",
+        rect: { left: 0, top: 0, width: 2843, height: 1513 },
+        focus: { left: 350, top: 770, width: 600, height: 600 },
+        focusLarge: { left: 400, top: 0, width: 1200, height: 1200 },
+        title: "Jars",
+        className: "candles",
+      },*/
+      //{
+      //  image: "/candle4.back.jpg",
+      //  rect: { left: 0, top: 0, width: 4705, height: 3605 },
+      //  focus: { left: 350, top: 770, width: 600, height: 600 },
+      //  focusLarge: { left: 400, top: 1000, width: 1400, height: 1400 },
+      //  title: "Jars",
+      //  className: "candles",
+      //},
       {
-        image: "/candle.jpg",
-        rect: { left: 0, top: 0, width: 4000, height: 2000 },
-        focus: { left: 1205, top: 0, width: 1000, height: 1000 },
-        focusLarge: { left: 1389, top: 250, width: 700, height: 700 },
+        image: "/candle6.jpg",
+        rect: { left: 0, top: 0, width: 4705, height: 3605 },
+        focus: { left: 1250, top: 1670, width: 1500, height: 1500 },
+        focusLarge: { left: 800, top: 1000, width: 1500, height: 1500 },
         title: "Jars",
         className: "candles",
       },
@@ -624,12 +656,12 @@ export default function Slider() {
       rotateZ(${position.angle + position.titleAngle}deg)
       translate(50%, 50%)
       translate(${
-        -tileRadius / 3 +
+        -tileRadius / 2.5 +
         (position.titleAngle == -22.5 - 90 ? tileRadius * 0 : 0)
-      }px, ${-tileRadius * 1.1}px)
+      }px, ${-tileRadius * 1.35}px)
       translate(0%, 50%)
       translate(-50%, -50%)
-      scale(${isMobile ? "100%" : "100%"})
+      scale(${isMobile ? "50%" : "50%"})
       translate(50%, 50%)
       translate(-${tileRadius * 0.15}px, 0)
       `,
@@ -717,10 +749,10 @@ export default function Slider() {
       } else if (slide == activeSlide) {
         imageElement.style.clipPath = `path("${centerPosition.expandedPath}")`;
         imageElement.style.transition = "clip-path .3s";
-        titleElement.style.transition = "transform .4s ease-out";
+        titleElement.style.transition = "transform .3s ease-in-out";
         titleElement.style.transform = `translate(-50%, -150%) translate(${
           centerPosition.left
-        }px, ${centerPosition.top - tileRadius}px)`;
+        }px, ${centerPosition.top - tileRadius * 1.25}px)`;
 
         Object.assign(
           imageElement.style,
@@ -843,8 +875,8 @@ export default function Slider() {
             ></div>
             <h2
               style={{
-                fontSize: tileRadius / 2,
-                width: tileRadius + "px",
+                fontSize: tileRadius,
+                width: tileRadius * 2 + "px",
                 textAlign: "center",
               }}
             >
@@ -857,7 +889,7 @@ export default function Slider() {
       <div
         className="backdrop"
         style={{
-          background: `radial-gradient(40.00% 40.00% at ${centerX}px ${centerY}px,rgba(0, 0, 0, 0.85) 0%,  rgba(0, 0, 0, 0.7) 32.06%, rgba(74, 52, 52, 0) 100%)`,
+          background: `radial-gradient(40.00% 40.00% at ${focusX}px ${focusY}px,rgba(0, 0, 0, 0.85) 0%,  rgba(0, 0, 0, 0.7) 32.06%, rgba(74, 52, 52, 0) 100%)`,
         }}
       ></div>
       <div
@@ -865,8 +897,8 @@ export default function Slider() {
           zIndex: 5,
           transform: "rotateZ(360deg)",
           position: "absolute",
-          left: centerX - tileRadius,
-          top: centerY - tileRadius,
+          left: focusX - tileRadius,
+          top: focusY - tileRadius,
           height: tileRadius * 2,
           width: tileRadius * 2,
         }}
