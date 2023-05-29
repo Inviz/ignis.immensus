@@ -113,8 +113,6 @@ a {
 /*	background-blend-mode: difference, screen;*/
 }
 .slide > div{
-	--img: url(https://garden.bradwoods.io/images/waves.webp);
-	background-image: var(--img), var(--img), var(--img) !important;
 }
 
 .backdrop {

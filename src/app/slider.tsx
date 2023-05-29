@@ -436,8 +436,7 @@ export default function Slider() {
   const stroke = tileRadius / 20;
   const octagonRaw = roundCorners(
     drawOctagon(1, 1, tileRadius - stroke),
-    tileRadius / 7,
-    0
+    tileRadius / 7
   ).path;
   const octagon =
     new SVGPathCommander(octagonRaw)
@@ -445,7 +444,7 @@ export default function Slider() {
         translate: [-1, -1],
       })
       .toString() +
-    `M -${tileRadius},-${tileRadius} M${tileRadius},${tileRadius} M0,0`;
+    `M -${tileRadius},-${tileRadius} M${tileRadius},${tileRadius}`;
 
   const shiftAligned =
     tileRadius * Math.sin(((2 * Math.PI) / 8) * 2) -
@@ -717,7 +716,7 @@ export default function Slider() {
         });
       } else if (slide == activeSlide) {
         imageElement.style.clipPath = `path("${centerPosition.expandedPath}")`;
-        imageElement.style.transition = "clip-path .3s, filter 3s -.8s";
+        imageElement.style.transition = "clip-path .3s";
         titleElement.style.transition = "transform .4s ease-out";
         titleElement.style.transform = `translate(-50%, -150%) translate(${
           centerPosition.left
@@ -831,8 +830,7 @@ export default function Slider() {
               }}
               style={{
                 /*@ts-ignore */
-                "--img": `url("${image}")`,
-                backgroundImage: '`url("${image}")`',
+                backgroundImage: `url("${image}")`,
                 position: "absolute",
                 top: 0,
                 left: 0,
