@@ -554,7 +554,7 @@ export default function Slider() {
       {
         image: "/fragrances.jpg",
         rect: { left: 0, top: 0, width: 2600, height: 1500 },
-        focus: { left: 756, top: 289, width: 857, height: 857 },
+        focus: { left: 756, top: 0, width: 857, height: 857 },
         focusLarge: { left: 756, top: 447, width: 467, height: 467 },
         title: "Oils",
         className: "fragrances",
@@ -570,7 +570,7 @@ export default function Slider() {
       {
         image: "/delivery.jpg",
         rect: { left: 0, top: 0, width: 2600, height: 2600 },
-        focus: { left: 333, top: 700, width: 1600, height: 1600 },
+        focus: { left: 333, top: 350, width: 1600, height: 1600 },
         focusLarge: { left: 585, top: 903, width: 700, height: 700 },
         title: "Refill",
         className: "about",
