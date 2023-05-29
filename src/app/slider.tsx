@@ -553,20 +553,20 @@ export default function Slider() {
         className: "about",
       },
       {
-        image: "/accessories.jpg",
-        rect: { left: 0, top: 0, width: 2560, height: 1707 },
-        focus: { left: 260, top: 150, width: 1000, height: 1000 },
-        focusLarge: { left: 333, top: 447, width: 580, height: 580 },
-        title: "Tools",
-        className: "accessories",
-      },
-      {
         image: "/fragrances.jpg",
         rect: { left: 0, top: 0, width: 2600, height: 1500 },
         focus: { left: 756, top: 289, width: 857, height: 857 },
         focusLarge: { left: 756, top: 447, width: 467, height: 467 },
         title: "Oils",
         className: "fragrances",
+      },
+      {
+        image: "/accessories.jpg",
+        rect: { left: 0, top: 0, width: 2560, height: 1707 },
+        focus: { left: 260, top: 150, width: 1000, height: 1000 },
+        focusLarge: { left: 333, top: 447, width: 580, height: 580 },
+        title: "Tools",
+        className: "accessories",
       },
       {
         image: "/delivery.jpg",
