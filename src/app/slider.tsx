@@ -848,7 +848,7 @@ export default function Slider() {
                 textAlign: "center",
               }}
             >
-              {title.toLowerCase()}
+              <span>{title.toLowerCase()}</span>
             </h2>
           </div>
         );

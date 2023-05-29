@@ -103,14 +103,17 @@ a {
 .slide h2{
   font-family: 'Saira Extra Condensed';
   text-transform: uppercase;
-  color: #fff;
-  -webkit-text-stroke: 1px rgba(128,128,128,1);
-  mix-blend-mode: difference;
   border-radius: 10px;
   line-height: 1;
-  backdrop-filter: blur(3px) opacity(0.6);
+  mix-blend-mode: difference;
  /* backdrop-filter: blur(2px);*/
-  
+}
+.slide h2 span {
+  position: relative;
+  z-index: 1;
+  -webkit-text-stroke: 1px rgba(128,128,128,1);
+  color: #999;
+  display: block;
 }
 .slide-inactive > div {
 /*	filter: brightness(2) invert(1) grayscale(1);*/
