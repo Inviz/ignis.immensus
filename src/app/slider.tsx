@@ -474,14 +474,14 @@ export default function Slider() {
             left: centerX - shiftDiagonally,
             top: centerY + shiftDiagonally - tileRadius,
             angle: -45,
-            titleAngle: -22.5,
+            titleAngle: -22.5 + 45,
           } as Position)) ||
           undefined,
         {
           left: centerX - shiftDiagonally,
           top: centerY + tileRadius - shiftDiagonally,
           angle: 0,
-          titleAngle: -22.5 - 45,
+          titleAngle: -22.5,
         } as Position,
         {
           left: centerX - shiftDiagonally + tileRadius,
@@ -553,6 +553,14 @@ export default function Slider() {
         className: "about",
       },
       {
+        image: "/accessories.jpg",
+        rect: { left: 0, top: 0, width: 2560, height: 1707 },
+        focus: { left: 260, top: 150, width: 1000, height: 1000 },
+        focusLarge: { left: 333, top: 447, width: 580, height: 580 },
+        title: "Tools",
+        className: "accessories",
+      },
+      {
         image: "/fragrances.jpg",
         rect: { left: 0, top: 0, width: 2600, height: 1500 },
         focus: { left: 756, top: 289, width: 857, height: 857 },
@@ -569,18 +577,10 @@ export default function Slider() {
         className: "about",
       },
       {
-        image: "/accessories.jpg",
-        rect: { left: 0, top: 0, width: 2560, height: 1707 },
-        focus: { left: 260, top: 150, width: 1000, height: 1000 },
-        focusLarge: { left: 333, top: 447, width: 580, height: 580 },
-        title: "Tools",
-        className: "accessories",
-      },
-      {
         image: "/candle.jpg",
         rect: { left: 0, top: 0, width: 4000, height: 2000 },
         focus: { left: 1205, top: 0, width: 1000, height: 1000 },
-        focusLarge: { left: 1389, top: 450, width: 700, height: 700 },
+        focusLarge: { left: 1389, top: 250, width: 700, height: 700 },
         title: "Jars",
         className: "candles",
       },
@@ -626,7 +626,7 @@ export default function Slider() {
       translate(50%, 50%)
       translate(${
         -tileRadius / 3 +
-        (position.titleAngle == -22.5 - 90 ? tileRadius * 0.1 : 0)
+        (position.titleAngle == -22.5 - 90 ? tileRadius * 0 : 0)
       }px, ${-tileRadius * 1.4}px)
       translate(0%, 50%)
       translate(-50%, -50%)
