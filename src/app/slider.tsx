@@ -440,12 +440,12 @@ export default function Slider() {
     0
   ).path;
   const octagon =
-    ` M-${tileRadius},-${tileRadius} M${tileRadius},${tileRadius} ` +
     new SVGPathCommander(octagonRaw)
       .transform({
         translate: [-1, -1],
       })
-      .toString();
+      .toString() +
+    `M -${tileRadius},-${tileRadius} M${tileRadius},${tileRadius} M0,0`;
 
   const shiftAligned =
     tileRadius * Math.sin(((2 * Math.PI) / 8) * 2) -
