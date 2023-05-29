@@ -626,7 +626,7 @@ export default function Slider() {
       translate(${
         -tileRadius / 3 +
         (position.titleAngle == -22.5 - 90 ? tileRadius * 0 : 0)
-      }px, ${-tileRadius * 1.4}px)
+      }px, ${-tileRadius * 1}px)
       translate(0%, 50%)
       translate(-50%, -50%)
       scale(${isMobile ? "100%" : "100%"})

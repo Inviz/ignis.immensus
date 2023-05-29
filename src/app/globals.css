@@ -104,7 +104,11 @@ a {
   font-family: 'Saira Extra Condensed';
   text-transform: uppercase;
   color: #fff;
-  -webkit-text-stroke: 1px rgba(0,0,0,0.6);
+  -webkit-text-stroke: 1px rgba(128,128,128,1);
+  mix-blend-mode: difference;
+  border-radius: 10px;
+  line-height: 1;
+  backdrop-filter: blur(3px) opacity(0.6);
  /* backdrop-filter: blur(2px);*/
   
 }
