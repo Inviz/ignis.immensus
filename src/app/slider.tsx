@@ -626,7 +626,7 @@ export default function Slider() {
       translate(${
         -tileRadius / 3 +
         (position.titleAngle == -22.5 - 90 ? tileRadius * 0 : 0)
-      }px, ${-tileRadius * 1}px)
+      }px, ${-tileRadius * 1.1}px)
       translate(0%, 50%)
       translate(-50%, -50%)
       scale(${isMobile ? "100%" : "100%"})
@@ -848,7 +848,7 @@ export default function Slider() {
                 textAlign: "center",
               }}
             >
-              <span>{title.toLowerCase()}</span>
+              {title.toLowerCase()}
             </h2>
           </div>
         );

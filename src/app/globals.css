@@ -105,11 +105,13 @@ a {
   text-transform: uppercase;
   border-radius: 10px;
   line-height: 1;
-  mix-blend-mode: difference;
- /* backdrop-filter: blur(2px);*/
-}
-.slide h2 span {
   position: relative;
+  mix-blend-mode: difference;
+  
+ /* backdrop-filter: blur(2px);*/
+  
+}
+.slide h2  {
   z-index: 1;
   -webkit-text-stroke: 1px rgba(128,128,128,1);
   color: #999;
