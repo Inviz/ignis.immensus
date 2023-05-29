@@ -440,7 +440,7 @@ export default function Slider() {
     0
   ).path;
   const octagon =
-    ` M-${tileRadius},-${tileRadius} M${tileRadius},${tileRadius}` +
+    ` M-${tileRadius},-${tileRadius} M${tileRadius},${tileRadius} ` +
     new SVGPathCommander(octagonRaw)
       .transform({
         translate: [-1, -1],
